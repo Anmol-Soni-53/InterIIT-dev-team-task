@@ -3,10 +3,9 @@ import cors from 'cors'
 const app = express();
 const port = 3000;
 app.use(cors())
-
 import { PrismaClient } from '@prisma/client';
-
 const prisma = new PrismaClient();
+
 // async function main() {
 //     itemData.forEach(async (element) =>{
 //         try{
@@ -37,8 +36,9 @@ const prisma = new PrismaClient();
 // }
 // main()
 
+
 app.get('/favicon.ico', (req, res) => {
-  res.status(204).end(); // Respond with no content
+  res.status(204).end(); 
 });
 app.get('/root',async(req, res) => {
   const children=await prisma.godown.findMany({
@@ -68,11 +68,19 @@ app.get('/root',async(req, res) => {
     },
   })
   res.send(children);
-  // res.send('Hello NOD Readers!');
+})
+app.get('/item/:id',async(req,res)=>{
+  const{id}=req.params;
+  const item=await prisma.item.findUnique({
+    where:{
+      item_id:id
+    }
+  })
+  res.send(item);
 })
 app.get('/:id', async(req, res) => {
   const {id}=req.params;
-  console.log(id);
+  // console.log(id);
   const children=await prisma.godown.findUnique({
     where:{
       godown_id:id

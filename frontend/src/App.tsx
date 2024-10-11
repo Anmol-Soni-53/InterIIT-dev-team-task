@@ -1,20 +1,23 @@
 // import Component from "./components/nested-tree-accordion"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import CollapsibleSidebar from "./components/collapsible-sidebar"
-interface Item {
-  id: string
-  name: string
-  item_id: string
-}
-interface TreeNode {
-  id: string
-  name: string
-  godown_id: string
-  children?: TreeNode[]
-  Item?: Item[]
-}
+import usedataStore from "./dataStore";
+// interface Item {
+//   id: string
+//   name: string
+//   item_id: string
+// }
+// interface TreeNode {
+//   id: string
+//   name: string
+//   godown_id: string
+//   children?: TreeNode[]
+//   Item?: Item[]
+// }
 function App() {
-  const [treeData, setTreeData] = useState<TreeNode[]>([])
+  // const treeData = usedataStore((state) => state.treeData);
+  const setTreeData = usedataStore((state) => state.setTreeData);
+  // const [treeData, setTreeData] = useState<TreeNode[]>([])
   const fetchData =async()=>{
     fetch('http://localhost:3000/root')
     .then(response => response.json()) 
@@ -28,9 +31,10 @@ function App() {
   }
   useEffect(() => {
     fetchData();
+    console.log('doing');
   }, [])
   return (
-    <CollapsibleSidebar treeData={treeData}/>
+    <CollapsibleSidebar />
   )
 }
 

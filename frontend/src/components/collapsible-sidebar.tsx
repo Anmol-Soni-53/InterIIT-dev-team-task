@@ -6,44 +6,39 @@ import { ChevronRight, Menu } from "lucide-react"
 import Component from "./nested-tree-accordion"
 import Details from "./item-details"
 import React from "react"
-
-interface Item {
-    id: string
-    name: string
-    item_id: string
-}
-interface TreeNode {
-    id: string
-    name: string
-    godown_id: string
-    children?: TreeNode[]
-    Item?: Item[]
-
-}
+import usedataStore from "@/dataStore"
+import useStore from "@/store"
 
 const OptimisedComponent = React.memo(Component);
-const SidebarContent = React.memo(({ treeData }: { treeData: TreeNode[] }) => (
-    <ScrollArea className="h-full py-6 pl-6 pr-6">
-        <OptimisedComponent data={treeData} />
+const SidebarContent = () => (
+    <ScrollArea className="h-full py-2 pl-6 pr-6">
+        <OptimisedComponent  />
     </ScrollArea>
-));
+);
 
-export default function CollapsibleSidebar({ treeData }: any) {
+export default function CollapsibleSidebar() {
+    const treeData = usedataStore((state) => state.treeData);
+    const setItemId = useStore((state) => state.setItemId);
+    // const setTreeData = usedataStore((state) => state.setTreeData);
     const [isExpanded, setIsExpanded] = useState(false)
     const toggleSidebar = () => {
         console.log(treeData);
         setIsExpanded(!isExpanded)
     }
+    console.log(treeData);
     return (
         <div className="flex h-screen">
             <aside className={` hidden md:flex flex-col border-r transition-all duration-300 ${isExpanded ? "min-w-fit" : "w-5 border-none" }`}>
                 <div className="flex items-center justify-between p-4 pl-1">
-                    <h1 className={`text-xl font-bold ${isExpanded ? "block" : "hidden"}`}>Godown Tracker</h1>
+                    <div className={`text-3xl font-bold  ${isExpanded ? "block" : "hidden"} hover:cursor-pointer `} onClick={()=>{
+                        setItemId("")
+                        setIsExpanded(false)
+                    }}>Godown Tracker</div>
                     <Button variant="ghost" size="icon" onClick={toggleSidebar}>
                         <ChevronRight className={`h-4 ml-1 w-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                     </Button>
                 </div>
-                {isExpanded && <SidebarContent treeData={treeData} />}
+                {isExpanded && <SidebarContent  />}
             </aside>
 
             <Sheet>
@@ -52,8 +47,8 @@ export default function CollapsibleSidebar({ treeData }: any) {
                         <Menu className="h-4 w-4" />
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="min-w-fit">
-                    <SidebarContent treeData={treeData} />
+                <SheetContent side="left" className="min-w-fit ">
+                    <SidebarContent />
                 </SheetContent>
             </Sheet>
 
