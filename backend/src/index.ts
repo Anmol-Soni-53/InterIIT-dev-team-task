@@ -3,6 +3,7 @@ import cors from "cors";
 const app = express();
 const port = 3000;
 app.use(cors());
+
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { godownData } from "./gData";

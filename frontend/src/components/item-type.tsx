@@ -16,6 +16,13 @@ interface Item {
 }
 const ItemType = () => {
     const navigate = useNavigate();
+    const token=localStorage.getItem("token");
+    useEffect(()=>{
+        if(!token){
+            navigate('/user/login')   
+        }
+
+    },[token])
     const { type } = useParams();
     const [items, setItems] = useState<Item[]>([])
     const [loading, setLoading] = useState<boolean>(true);

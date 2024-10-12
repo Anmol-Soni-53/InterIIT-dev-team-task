@@ -11,6 +11,13 @@ import axios from 'axios';
 
 export default function Details() {
     const navigate = useNavigate();
+    const token=localStorage.getItem("token");
+    useEffect(()=>{
+        if(!token){
+            navigate('/user/login')   
+        }
+
+    },[token])
     const itemId = useStore((state) => state.itemId);
     const [item, setItem] = useState<ItemProps | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
