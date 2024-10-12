@@ -91,7 +91,7 @@
 //   return <TreeAccordion />;
 // }
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ChevronRight, ChevronDown, Folder, File } from 'lucide-react';
 import useStore from '@/store';
 import usedataStore from '@/dataStore';
