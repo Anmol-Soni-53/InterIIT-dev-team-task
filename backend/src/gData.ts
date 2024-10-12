@@ -1,4 +1,4 @@
-export  const godownData=[
+export const  godownData=[
     {
       godown_id: "d72518e97c3f4a68979153f2b8e9308e",
       name: "Torres, Rowland and Peters Warehouse",

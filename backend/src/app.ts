@@ -4,40 +4,10 @@ interface Warehouse {
     name: string;
     children: Warehouse[];
     Item: any[]; // You can replace `any` with a more specific type if needed
+    flow: String[];
   }
 
-  const warehouses: Warehouse[] = [
-    {
-      id: 86,
-      godown_id: "cf46ac14da30428694619096ce991a2b",
-      name: "Davis-Stewart Warehouse",
-      children: [],
-      Item: []
-    },
-    {
-      id: 1,
-      godown_id: "d72518e97c3f4a68979153f2b8e9308e",
-      name: "Torres, Rowland and Peters Warehouse",
-      children: [
-        {
-          id: 96,
-          godown_id: "cf46ac14da30428694619096ce991a2b",
-          name: "Nested Davis-Stewart Warehouse",
-          children: [
-            {
-              id: 97,
-              godown_id: "nested-godown-id",
-              name: "Further Nested Warehouse",
-              children: [],
-              Item: []
-            }
-          ],
-          Item: []
-        },
-      ],
-      Item: []
-    }
-  ];
+  import { godownData } from "./gData";
 
   // Function to find a warehouse by id recursively
   function findWarehouseById(id: number, warehouses: Warehouse[]): Warehouse | null {
@@ -68,32 +38,50 @@ interface Warehouse {
     });
   }
 
-  // Example usage to find a warehouse
-  console.log("hi there",warehouses[1].children[0])
-  const foundWarehouse = findWarehouseById(97, warehouses);
-  console.log('Found Warehouse:', foundWarehouse);
+  // // Example usage to find a warehouse
+  // console.log("hi there",warehouses[1].children[0])
+  // const foundWarehouse = findWarehouseById(97, warehouses);
+  // console.log('Found Warehouse:', foundWarehouse);
 
-  // Example usage to update the warehouse with id 97
-  const updatedWarehouses = updateWarehouseById(97, { name: "Updated Further Nested Warehouse" }, warehouses);
-  console.log('Updated Warehouses:', JSON.stringify(updatedWarehouses, null, 2));
-// import { PrismaClient } from "@prisma/client";
-// const prisma = new PrismaClient();
-// const fixLevels = async () => {
-//   const children = await prisma.godown.findMany({
-//     where: {},
-//     select: {
-//       level: true,
-//       parentGodownId:true,
-//       children: {
-//         select: {
-//           id: true,
-//           godown_id: true,
-//           parentGodownId:true,
-//         },
-//       }
-//     },
-//   });
-//   console.log(children)
-// };
+  // // Example usage to update the warehouse with id 97
+  // const updatedWarehouses = updateWarehouseById(97, { name: "Updated Further Nested Warehouse" }, warehouses);
+  // console.log('Updated Warehouses:', JSON.stringify(updatedWarehouses, null, 2));
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+const fixFlows = async () => {
+  for (const element of godownData) {
+    let flow: string[] = []; // Initialize flow as an empty array
+    try {
+      // Check if there's a parent godown
+      if (element.parentGodownId != null) {
+        const parent = await prisma.godown.findUnique({
+          where: {
+            godown_id: element.parentGodownId,
+          },
+          select: { flow: true }, // Only select the flow field
+        });
 
-// fixLevels();
+        // If parent flow exists, merge it with current element's name
+        if (parent?.flow) {
+          flow = [...parent.flow]; // Create a copy of the parent's flow
+        }
+      }
+
+      // Add the current element's name to the flow
+      flow.push(element.name);
+
+      // Update the godown with the new flow
+      await prisma.godown.update({
+        where: {
+          godown_id: element.godown_id,
+        },
+        data: {
+          flow: flow, // Use ':' instead of '='
+        },
+      });
+    } catch (error) {
+      console.error('Error updating flow for godown:', element.godown_id, error);
+    }
+  }
+};
+fixFlows();

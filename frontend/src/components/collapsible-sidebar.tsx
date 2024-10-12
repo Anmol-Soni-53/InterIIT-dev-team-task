@@ -1,4 +1,4 @@
-import {  useState } from "react"
+import {  useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -8,6 +8,7 @@ import Details from "./item-details"
 import React from "react"
 import usedataStore from "@/dataStore"
 import useStore from "@/store"
+import { useNavigate } from "react-router-dom"
 
 const OptimisedComponent = React.memo(Component);
 const SidebarContent = () => (
@@ -15,8 +16,16 @@ const SidebarContent = () => (
         <OptimisedComponent  />
     </ScrollArea>
 );
-
 export default function CollapsibleSidebar() {
+    const navigate=useNavigate();
+    const token=localStorage.getItem("token");
+    useEffect(()=>{
+        if(!token){
+            navigate('/user/login')   
+        }
+
+    },[token])
+    
     const treeData = usedataStore((state) => state.treeData);
     const setItemId = useStore((state) => state.setItemId);
     // const setTreeData = usedataStore((state) => state.setTreeData);
@@ -53,7 +62,9 @@ export default function CollapsibleSidebar() {
             </Sheet>
 
             <main className="flex-1 p-5 ml-8 md:ml-3">
-                <Details />
+                {/* <MinItemCard {...data} /> */}
+                <Details/>
+                {/* <Navigation locations={locations}/> */}
             </main>
         </div>
     )

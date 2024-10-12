@@ -86,7 +86,7 @@
 // }
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -111,32 +111,47 @@ export default function ItemCard({ item }: { item: ItemProps }) {
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
+  function useBreakpoint(){
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(min-width: 1024px)'); 
+    const handleMediaChange = () => setIsLargeScreen(mediaQuery.matches);
+    handleMediaChange();
+    mediaQuery.addEventListener('change', handleMediaChange);
+    return () => mediaQuery.removeEventListener('change', handleMediaChange);
+  }, []);
+
+  return isLargeScreen;
+}
+
+const isLargeScreen = useBreakpoint();
   return (
+    // max-h-fit lg:max-h-none lg:h-full  max-w-3xl
+    
     <Card
-      className=" max-h-fit lg:max-h-none lg:h-full  max-w-3xl mx-auto transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+      className=" max-w-3xl transform transition-all duration-300 ease-in-out hover:scale-100 hover:shadow-xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-t-lg">
         <CardTitle className="text-2xl font-bold">{item.name}</CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1  lg:grid-cols-2 gap-6 max-h-screen">
-          <div className=" flex flex-col items-center justify-center max-h-32 lg:max-h-none lg:h-full">
-            {loading && (
+      <CardContent className="p-6 ">
+        <div className="grid grid-cols-1  lg:grid-cols-2 gap-6 max-h-fit ">
+          {/* flex flex-col items-center justify-center max-h-16 bg-red-300 lg:max-h-none lg:h-full */}
+          <div className=" flex flex-col justify-center items-center ">
+          {loading && (
               <div className="h-full w-48 animate-pulse bg-gray-300 rounded-lg" />
             )}
-            <div className="h-full overflow-hidden flex items-center justify-center">
-              <img
-                src={item.image_url}
-                alt={item.name}
-                className={`w-full h-full object-cover rounded-lg ${loading ? 'hidden' : 'block'} 
-          transition-all duration-300 ease-in-out ${isHovered ? 'scale-105' : 'scale-100'}`}
-                onLoad={() => setLoading(false)}
-              />
-            </div>
-
+            <img
+              src={item.image_url}
+              alt={item.name}
+              width={isLargeScreen?250:200} //250 
+              className={`object-cover rounded-lg ${loading ? 'hidden' : 'block'} 
+          transition-all duration-300 ease-in-out ${isHovered ? 'scale-105' : 'scale-100'} `}
+              onLoad={() => setLoading(false)}
+            />
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -149,8 +164,8 @@ export default function ItemCard({ item }: { item: ItemProps }) {
               <span className="text-2xl font-bold text-emerald-600">{formatPrice(item.price)}</span>
             </div>
             <Separator className="bg-gradient-to-r from-purple-500 to-pink-500" />
-            <div className="flex flex-col gap-2">
-              <div className="space-y-3">
+            <div className="flex lg:flex-col gap-2">
+              <div className="flex flex-col gap-2 ">
                 <div className="flex items-center space-x-2 transition-all duration-300 ease-in-out hover:translate-x-2">
                   <Package className="w-5 h-5 text-blue-500" />
                   <span>Quantity: <span className="font-semibold text-blue-700">{item.quantity}</span></span>
@@ -163,22 +178,20 @@ export default function ItemCard({ item }: { item: ItemProps }) {
                   <Warehouse className="w-5 h-5 text-yellow-500" />
                   <div className="flex items-center flex-wrap">
                     <span>Godown ID:</span>
-                    <span className="pl-2 font-medium text-sm text-yellow-700 truncate max-w-full">
+                    <span className="pl-1 font-medium text-sm text-yellow-700 truncate max-w-full">
                       {item.parentGodownId}
                     </span>
                   </div>
                 </div>
-
-                {/* <div className="flex items-center space-x-2 transition-all duration-300 ease-in-out hover:translate-x-2">
-                  <span>Godown ID: <span className="font-semibold text-sm text-yellow-700 ">{item.parentGodownId}</span> </span>
-                </div> */}
                 <div className="flex items-center space-x-2 transition-all duration-300 ease-in-out hover:translate-x-2">
                   <Wrench className="w-5 h-5 text-red-500" />
                   <span>Brand: <span className="font-semibold text-red-700">{item.brand}</span></span>
                 </div>
               </div>
-              <Separator className="bg-gradient-to-r from-purple-500 to-pink-500" />
-              <div className="space-y-2">
+              {/* <Separator className="bg-gradient-to-r from-purple-500 to-pink-500 " /> */}
+              <Separator className="hidden lg:block bg-gradient-to-r from-purple-500 to-pink-500" />
+
+              <div className="flex flex-col gap-2">
                 <h3 className="text-lg font-semibold text-purple-600">Attributes</h3>
                 {Object.entries(item.attributes).map(([key, value]) => (
                   <div key={key} className="flex items-center space-x-2 transition-all duration-300 ease-in-out hover:translate-x-2">

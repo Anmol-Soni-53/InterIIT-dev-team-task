@@ -4,41 +4,42 @@ import { useEffect, useState } from 'react';
 import { ItemProps } from '@/types';
 import { Spinner } from './spinner';
 import { motion } from 'framer-motion'
-
+import Navigation from './navigation';
+import { Button } from './ui/button';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 export default function Details() {
+    const navigate = useNavigate();
     const itemId = useStore((state) => state.itemId);
     const [item, setItem] = useState<ItemProps | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true); // Set loading to true when fetching starts
+            setLoading(true); 
             try {
-                const response = await fetch(`http://localhost:3000/item/${itemId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
+                const response = await axios.get(`http://localhost:3000/item/${itemId}`);
+                const data = response.data;
                 setItem(data);
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
             } finally {
-                setLoading(false); // Set loading to false when fetching completes
+                setLoading(false); 
             }
         };
-
+       
         if (itemId !== "") {
             fetchData();
         }
+
     }, [itemId]);
 
     useEffect(() => {
-        // Prevent scrolling on landing page
         if (itemId === "") {
             document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = 'auto'; // Enable scrolling on item details
+            document.body.style.overflow = 'auto'; 
         }
         return () => {
             document.body.style.overflow = 'auto';
@@ -65,49 +66,72 @@ export default function Details() {
             transition: { type: "spring", stiffness: 100 }
         }
     }
-
+    const types = ["Toys", "Clothing", "Furniture", "Electronics", "Tools"]
     return (
         <>
-  
             {itemId === "" ? (
-                          <motion.div
-                          className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500"
-                          initial="hidden"
-                          animate="visible"
-                          variants={containerVariants}
-                      >
-                          <div className=" flex flex-col items-center justify-center h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 text-center p-8">
-                              <motion.h1 className="text-4xl font-extrabold text-white mb-4 shadow-text" variants={childVariants} >
-                                  Welcome to the Warehouse Management System
-                              </motion.h1>
-                              <motion.h3 className="text-xl font-medium text-white mb-2 shadow-text" variants={childVariants}>
-                                  Manage Your Inventory Efficiently
-                              </motion.h3>
-                              <motion.p className="mt-4 text-white text-lg shadow-text" variants={childVariants}>
-                                  Please select a warehouse from the sidebar to view its details and manage your stock effectively.
-                              </motion.p>
-                              <motion.p className="mt-2 text-white italic shadow-text" variants={childVariants}>
-                                  Your success is our priority!
-                              </motion.p>
-                          </div>
-                      </motion.div>
-            ): (
-                    <div>
+                <motion.div
+                    className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500"
+                    initial="hidden"
+                    animate="visible"
+                    variants={containerVariants}
+                >
+                    <div className=" flex flex-col items-center justify-center h-screen bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 text-center p-8">
+                        <motion.h1 className="text-4xl font-extrabold text-white mb-4 shadow-text" variants={childVariants} >
+                            Welcome to the Warehouse Management System
+                        </motion.h1>
+                        <motion.h3 className="text-xl font-medium text-white mb-2 shadow-text" variants={childVariants}>
+                            Manage Your Inventory Efficiently
+                        </motion.h3>
+                        <motion.p className="mt-4 text-white text-lg shadow-text" variants={childVariants}>
+                            Please select a warehouse from the sidebar to view its details and manage your stock effectively
+                        </motion.p>
+                        <br />
+                        <motion.h3 className="text-xl font-medium text-white mb-2 shadow-text" variants={childVariants}>
+                            OR
+                        </motion.h3>
+                        <motion.p className="mt-4 text-white text-lg shadow-text" variants={childVariants}>
+                            Please select a Category to see its stocks
+                        </motion.p>
+                        <motion.div className="mt-4 flex gap-2  text-white text-lg shadow-text" variants={childVariants} >
+                            {types.map((element, index) => {
+                                return (
+                                    <Button key={index} className='bg-gradient-to-br from-purple-400 to to-blue-600' name={element} onClick={(e) => {
+                                        navigate('/filter/' + e.currentTarget.name)
+                                    }}>{element}</Button>
+                                );
+                            })}
+                        </motion.div>
+                        <motion.p className="mt-12 text-white italic shadow-text" variants={childVariants}>
+                            Your success is our priority!
+                        </motion.p>
+                    </div>
+                </motion.div>
+            ) : (
+                <div>
                     {
-                        loading?(
-                        <div >
-            <Spinner>Loading</Spinner>
-        </div >
-                    ) : item ? (  // Only render ItemCard when item is not null
-        <ItemCard item={item} />
-    ) : (
-        <p>No item found.</p>  // Optional: Display a message if item is still null
-    )
-}
+                        loading ? (
+                            <div >
+                                <Spinner>Loading</Spinner>
+                            </div >
+                        ) : item ? (  
+                            <div >
+                                <Navigation/>
+                                <div >
+                                    <br />
+                                    <div className=' flex justify-center'>
+                                        <ItemCard item={item} />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <p>No item found.</p>  
+                        )
+                    }
                 </div >
             )}
 
-        
+
         </>
     );
 }

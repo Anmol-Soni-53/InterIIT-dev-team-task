@@ -1,11 +1,15 @@
 "use strict";
-// interface Warehouse {
-//     id: number;
-//     godown_id: string;
-//     name: string;
-//     children: Warehouse[];
-//     Item: any[]; // You can replace `any` with a more specific type if needed
-//   }
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,98 +46,105 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-//   const warehouses: Warehouse[] = [
-//     {
-//       id: 86,
-//       godown_id: "cf46ac14da30428694619096ce991a2b",
-//       name: "Davis-Stewart Warehouse",
-//       children: [],
-//       Item: []
-//     },
-//     {
-//       id: 1,
-//       godown_id: "d72518e97c3f4a68979153f2b8e9308e",
-//       name: "Torres, Rowland and Peters Warehouse",
-//       children: [
-//         {
-//           id: 96,
-//           godown_id: "cf46ac14da30428694619096ce991a2b",
-//           name: "Nested Davis-Stewart Warehouse",
-//           children: [
-//             {
-//               id: 97,
-//               godown_id: "nested-godown-id",
-//               name: "Further Nested Warehouse",
-//               children: [],
-//               Item: []
-//             }
-//           ],
-//           Item: []
-//         },
-//       ],
-//       Item: []
-//     }
-//   ];
-//   // Function to find a warehouse by id recursively
-//   function findWarehouseById(id: number, warehouses: Warehouse[]): Warehouse | null {
-//     for (const warehouse of warehouses) {
-//       if (warehouse.id === id) {
-//         return warehouse; // Return if found
-//       }
-//       // Search in children if exists
-//       const foundInChildren = findWarehouseById(id, warehouse.children);
-//       if (foundInChildren) {
-//         return foundInChildren; // Return if found in children
-//       }
-//     }
-//     return null; // Return null if not found
-//   }
-//   // Function to update a warehouse by id recursively
-//   function updateWarehouseById(id: number, updatedData: Partial<Warehouse>, warehouses: Warehouse[]): Warehouse[] {
-//     return warehouses.map(warehouse => {
-//       if (warehouse.id === id) {
-//         return { ...warehouse, ...updatedData }; // Update if found
-//       }
-//       // Update children if exists
-//       return {
-//         ...warehouse,
-//         children: updateWarehouseById(id, updatedData, warehouse.children) // Update children recursively
-//       };
-//     });
-//   }
-//   // Example usage to find a warehouse
-//   console.log("hi there",warehouses[1].children[0])
-//   const foundWarehouse = findWarehouseById(97, warehouses);
-//   console.log('Found Warehouse:', foundWarehouse);
-//   // Example usage to update the warehouse with id 97
-//   const updatedWarehouses = updateWarehouseById(97, { name: "Updated Further Nested Warehouse" }, warehouses);
-//   console.log('Updated Warehouses:', JSON.stringify(updatedWarehouses, null, 2));
+var gData_1 = require("./gData");
+// Function to find a warehouse by id recursively
+function findWarehouseById(id, warehouses) {
+    for (var _i = 0, warehouses_1 = warehouses; _i < warehouses_1.length; _i++) {
+        var warehouse = warehouses_1[_i];
+        if (warehouse.id === id) {
+            return warehouse; // Return if found
+        }
+        // Search in children if exists
+        var foundInChildren = findWarehouseById(id, warehouse.children);
+        if (foundInChildren) {
+            return foundInChildren; // Return if found in children
+        }
+    }
+    return null; // Return null if not found
+}
+// Function to update a warehouse by id recursively
+function updateWarehouseById(id, updatedData, warehouses) {
+    return warehouses.map(function (warehouse) {
+        if (warehouse.id === id) {
+            return __assign(__assign({}, warehouse), updatedData); // Update if found
+        }
+        // Update children if exists
+        return __assign(__assign({}, warehouse), { children: updateWarehouseById(id, updatedData, warehouse.children) // Update children recursively
+         });
+    });
+}
+// // Example usage to find a warehouse
+// console.log("hi there",warehouses[1].children[0])
+// const foundWarehouse = findWarehouseById(97, warehouses);
+// console.log('Found Warehouse:', foundWarehouse);
+// // Example usage to update the warehouse with id 97
+// const updatedWarehouses = updateWarehouseById(97, { name: "Updated Further Nested Warehouse" }, warehouses);
+// console.log('Updated Warehouses:', JSON.stringify(updatedWarehouses, null, 2));
 var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
-var fixLevels = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var children;
+var fixFlows = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var _i, godownData_1, element, flow, parent_1, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, prisma.godown.findMany({
-                    where: {},
-                    select: {
-                        level: true,
-                        parentGodownId: true,
-                        children: {
-                            select: {
-                                id: true,
-                                godown_id: true,
-                                parentGodownId: true,
-                            },
-                        }
-                    },
-                })];
+            case 0:
+                _i = 0, godownData_1 = gData_1.godownData;
+                _a.label = 1;
             case 1:
-                children = _a.sent();
-                console.log(children);
-                return [2 /*return*/];
+                if (!(_i < godownData_1.length)) return [3 /*break*/, 8];
+                element = godownData_1[_i];
+                flow = [];
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 6, , 7]);
+                if (!(element.parentGodownId != null)) return [3 /*break*/, 4];
+                return [4 /*yield*/, prisma.godown.findUnique({
+                        where: {
+                            godown_id: element.parentGodownId,
+                        },
+                        select: { flow: true }, // Only select the flow field
+                    })];
+            case 3:
+                parent_1 = _a.sent();
+                // If parent flow exists, merge it with current element's name
+                if (parent_1 === null || parent_1 === void 0 ? void 0 : parent_1.flow) {
+                    flow = __spreadArray([], parent_1.flow, true); // Create a copy of the parent's flow
+                }
+                _a.label = 4;
+            case 4:
+                // Add the current element's name to the flow
+                flow.push(element.name);
+                // Update the godown with the new flow
+                return [4 /*yield*/, prisma.godown.update({
+                        where: {
+                            godown_id: element.godown_id,
+                        },
+                        data: {
+                            flow: flow, // Use ':' instead of '='
+                        },
+                    })];
+            case 5:
+                // Update the godown with the new flow
+                _a.sent();
+                return [3 /*break*/, 7];
+            case 6:
+                error_1 = _a.sent();
+                console.error('Error updating flow for godown:', element.godown_id, error_1);
+                return [3 /*break*/, 7];
+            case 7:
+                _i++;
+                return [3 /*break*/, 1];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
-fixLevels();
+fixFlows();

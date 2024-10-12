@@ -40,90 +40,132 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+var cors_1 = __importDefault(require("cors"));
 var app = (0, express_1.default)();
 var port = 3000;
+app.use((0, cors_1.default)());
 var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
-// async function main() {
-//     itemData.forEach(async (element) =>{
-//         try{
-//             const newItem = await prisma.item.create({
-//             data: {
-//                 item_id :element.item_id,
-//                 name:element.name,
-//                 quantity:element.quantity,
-//                 category:element.category,
-//                 price:element.price,
-//                 status:element.status,
-//                 parentGodownId:element.parentGodownId,
-//                 brand:element.brand,
-//                 attributes:element.attributes,
-//                 image_url:element.image_url
-//             }
-//             });
-//             console.log(newItem);
-//         }
-//         catch(err){
-//             console.log(element);
-//             console.log("already present");
-//         }
-//     } 
-//     );
-// }
-// main()
-app.get('/favicon.ico', function (req, res) {
-    res.status(204).end(); // Respond with no content
+var iData_1 = require("./iData");
+function main() {
+    return __awaiter(this, void 0, void 0, function () {
+        var newItems, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, prisma.item.createMany({
+                            data: iData_1.itemData,
+                            skipDuplicates: true, // Optional: skips records that would violate unique constraints
+                        })];
+                case 1:
+                    newItems = _a.sent();
+                    console.log("".concat(newItems.count, " godowns inserted."));
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    console.error("Error inserting items:", err_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+// main();
+app.get("/favicon.ico", function (req, res) {
+    res.status(204).end();
 });
-app.get('/root', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get("/root", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var children;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, prisma.godown.findMany({
                     where: {
-                        parentGodownId: null
+                        parentGodownId: null,
                     },
                     select: {
                         id: true,
                         godown_id: true,
                         name: true,
-                        level: true,
                         children: {
                             select: {
                                 id: true,
                                 godown_id: true,
                                 name: true,
-                                level: true,
-                            }
+                            },
                         },
                         Item: {
                             select: {
                                 id: true,
                                 item_id: true,
-                                name: true
-                            }
-                        }
+                                name: true,
+                            },
+                        },
                     },
                 })];
             case 1:
                 children = _a.sent();
-                res.json(children);
+                res.send(children);
                 return [2 /*return*/];
         }
     });
 }); });
-app.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get("/item/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, item;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                id = req.params.id;
+                return [4 /*yield*/, prisma.item.findUnique({
+                        where: {
+                            item_id: id,
+                        },
+                    })];
+            case 1:
+                item = _a.sent();
+                res.send(item);
+                return [2 /*return*/];
+        }
+    });
+}); });
+app.get("/filter/:type", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var type, items;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                type = req.params.type;
+                return [4 /*yield*/, prisma.item.findMany({
+                        where: {
+                            category: type,
+                        },
+                        select: {
+                            item_id: true,
+                            parentGodownId: true,
+                            name: true,
+                            quantity: true,
+                            price: true,
+                            brand: true,
+                        },
+                    })];
+            case 1:
+                items = _a.sent();
+                res.send(items);
+                return [2 /*return*/];
+        }
+    });
+}); });
+app.get("/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var id, children;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 id = req.params.id;
-                console.log(id);
                 return [4 /*yield*/, prisma.godown.findUnique({
                         where: {
-                            godown_id: id
-                        }, select: {
+                            godown_id: id,
+                        },
+                        select: {
                             id: true,
-                            level: true,
                             godown_id: true,
                             name: true,
                             children: {
@@ -131,24 +173,21 @@ app.get('/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                                     id: true,
                                     godown_id: true,
                                     name: true,
-                                    level: true
-                                }
+                                },
                             },
                             Item: {
                                 select: {
                                     id: true,
                                     item_id: true,
-                                    name: true
-                                }
-                            }
+                                    name: true,
+                                },
+                            },
                         },
-                    })
-                    // console.log(children?.children)
-                ];
+                    })];
             case 1:
                 children = _a.sent();
                 // console.log(children?.children)
-                res.json(children);
+                res.send(children);
                 return [2 /*return*/];
         }
     });

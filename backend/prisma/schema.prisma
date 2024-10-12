@@ -13,10 +13,10 @@ model Godown {
   godown_id      String   @unique
   name           String
   parentGodownId String?
-  level          String  @default("") 
   parentGodown   Godown?  @relation("ParentToChild", fields: [parentGodownId], references: [godown_id])
   children       Godown[] @relation("ParentToChild")
   Item           Item[]
+  flow           String[]
 }
 
 model Item {
@@ -32,4 +32,11 @@ model Item {
   attributes     Json?
   image_url      String
   parentGodown   Godown @relation(fields: [parentGodownId], references: [godown_id])
+}
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  name String?
+  password String
 }

@@ -4,6 +4,7 @@ interface Item {
   id: string;
   name: string;
   item_id: string;
+  parentGodownId: string;
 }
 
 interface TreeNode {
