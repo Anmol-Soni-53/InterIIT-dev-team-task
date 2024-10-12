@@ -10,8 +10,8 @@ export type TreeNode = {
   id: string;
   name: string;
   godown_id: string;
-  children?: TreeNode[]; // Optional array of TreeNodes for nesting
-  Item?: Item[]; // Optional array of Item objects
+  children?: TreeNode[]; 
+  Item?: Item[]; 
 };
   
 export type ItemAttributes ={
