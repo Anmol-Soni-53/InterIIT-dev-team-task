@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { LogIn } from 'lucide-react'
-import { useState } from "react"
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-
 
 export default function LoginComponent() {
     const navigate = useNavigate();
@@ -28,22 +23,17 @@ export default function LoginComponent() {
         }
     };
 
-    const HandleSignIn = async (data: {
-        email: string,
-        password: string
-    }) => {
-        const response = await axios.post("http://localhost:3000/user/signin", data)
-        localStorage.setItem("token", response.data.token)
-        console.log(response.data.token)
+    const HandleSignIn = async (data: { email: string, password: string }) => {
+        const response = await axios.post("http://localhost:3000/user/signin", data);
+        localStorage.setItem("token", response.data.token);
+        console.log(response.data.token);
         navigate(`/`);
-    }
+    };
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
         if (validateEmail(email)) {
-            const data = {
-                email: email,
-                password: password
-            }
+            const data = { email: email, password: password };
             HandleSignIn(data);
         } else {
             setEmailError('Please enter a valid email address.');
@@ -56,30 +46,32 @@ export default function LoginComponent() {
                 <h2 className="text-3xl font-bold mb-6 text-gray-800">Welcome Back!</h2>
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
-                        <Label htmlFor="loginEmail">Email</Label>
-                        <Input
+                        <label htmlFor="loginEmail" className="block text-sm font-medium text-gray-700">Email</label>
+                        <input
                             id="loginEmail"
                             type="email"
                             placeholder="you@example.com"
                             onChange={handleEmailChange}
                             required
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                         {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="loginPassword">Password</Label>
-                        <Input
+                        <label htmlFor="loginPassword" className="block text-sm font-medium text-gray-700">Password</label>
+                        <input
                             id="loginPassword"
                             type="password"
                             required
-                            onChange={(e) => {
-                                setPassword(e.currentTarget.value);
-                            }}
+                            onChange={(e) => setPassword(e.currentTarget.value)}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         />
                     </div>
-                    <Button className="w-full" type="submit">
-                        Log In <LogIn className="ml-2 h-4 w-4" />
-                    </Button>
+                    <button
+                        className="w-full bg-gradient-to-r from-purple-500 to-red-600 hover:from-blue-600 hover:to-pink-700 text-white font-semibold py-2 rounded flex items-center justify-center"
+                        type="submit">
+                        Log In
+                    </button>
                 </form>
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Don't have an account?{' '}
