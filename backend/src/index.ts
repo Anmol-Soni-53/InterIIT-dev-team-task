@@ -16,9 +16,9 @@ app.use(express.json());
 app.get("/favicon.ico", (req, res) => {
   res.status(204).end();
 });
-app.use('/user',userRouter);
-app.use('/',godownRouter);
-app.use('/item',itemRouter);
+app.use('/api/user',userRouter);
+app.use('/api/',godownRouter);
+app.use('/api/item',itemRouter);
 // async function main() {
   // try {
   //   const newGodowns = await prisma.godown.createMany({
