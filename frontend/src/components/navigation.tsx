@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react';
 import useStore from '@/store';
 import axios from 'axios';
 export default function Navigation() {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [locations, setLocations] = useState<string[] | null>([])
     const parentGodownId = useStore((state) => state.parentGodownId);
     useEffect(()=>{
         const fetchFlow = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/flow/${parentGodownId}`);
+                const response = await axios.get(`${apiUrl}/flow/${parentGodownId}`);
                 const data = response.data
                 setLocations(data);
             } catch (error) {

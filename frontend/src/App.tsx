@@ -6,7 +6,6 @@ import { data } from "./rootData";
 import AuthComponent from "./components/Auth";
 
 function App() {
-  // const treeData = usedataStore((state) => state.treeData);
   const setTreeData = usedataStore((state) => state.setTreeData);
   setTreeData(data);
   return (
@@ -14,7 +13,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<CollapsibleSidebar />} />
-          {/* <Route path="/check" element={<ItemCard item={item} />} /> */}
           <Route path="/user/:type" element={<AuthComponent/>} />
           <Route path="/filter/:type" element={<ItemType/>} />
         </Routes>

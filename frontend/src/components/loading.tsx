@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { ChevronDown } from "lucide-react"
 
 export default function Loading({ items = 1 }: { items?: number }) {
   return (

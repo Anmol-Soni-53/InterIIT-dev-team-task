@@ -15,6 +15,7 @@ interface Item {
     brand: string,
 }
 const ItemType = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const token=localStorage.getItem("token");
     useEffect(()=>{
@@ -30,7 +31,7 @@ const ItemType = () => {
         const fetchType = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:3000/item/filter/${type}`);
+                const response = await axios.get(`${apiUrl}/item/filter/${type}`);
                 // if (!response.ok) {
                 //     throw new Error(`Error fetching data: ${response.statusText}`);
                 // }

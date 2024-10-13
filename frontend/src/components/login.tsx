@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export default function LoginComponent() {
+    const apiUrl = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -24,7 +25,7 @@ export default function LoginComponent() {
     };
 
     const HandleSignIn = async (data: { email: string, password: string }) => {
-        const response = await axios.post("http://localhost:3000/user/signin", data);
+        const response = await axios.post(`${apiUrl}/user/signin`, data);
         localStorage.setItem("token", response.data.token);
         console.log(response.data.token);
         navigate(`/`);
