@@ -1,6 +1,3 @@
-Here's a comprehensive README for your project:
-
----
 
 # Full Stack Application
 
