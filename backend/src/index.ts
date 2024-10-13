@@ -13,7 +13,7 @@ import godownRouter from "./routes/godown"
 import itemRouter from "./routes/item"
 app.use(express.json());
 
-app.get("/favicon.ico", (req, res) => {
+app.get("/favicon.ico", (req:any, res:any) => {
   res.status(204).end();
 });
 app.use('/api/user',userRouter);
