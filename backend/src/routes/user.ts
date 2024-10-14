@@ -6,10 +6,8 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = "__RANDOM__@@";
 
-// Initialize Prisma Client
 const prisma = new PrismaClient();
 
-// Define schemas for signup and signin
 const signupSchema = z.object({
   name: z.string().optional(),
   email: z.string().email({ message: "Must be a valid email" }),
@@ -21,10 +19,8 @@ const signinSchema = z.object({
   password: z.string(),
 });
 
-// Create a new Express router
 const router = express.Router();
 
-// POST /signup route
 router.post("/signup", async (req: any, res: any) => {
   const { success, error } = signupSchema.safeParse(req.body);
   if (!success) {
@@ -66,7 +62,6 @@ router.post("/signup", async (req: any, res: any) => {
   }
 });
 
-// POST /signin route
 router.post("/signin", async (req: any, res: any) => {
   const { success, error } = signinSchema.safeParse(req.body);
   if (!success) {
