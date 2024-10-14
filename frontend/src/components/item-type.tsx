@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import MinItemCard from "./min-item-card";
 import { useParams } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Home, Search } from 'lucide-react'
+import { Home } from 'lucide-react'
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "./spinner";
 import axios from "axios";
