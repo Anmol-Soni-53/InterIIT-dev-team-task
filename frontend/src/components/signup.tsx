@@ -31,6 +31,8 @@ export default function SignupComponent() {
         email: string,
         password: string
     }) => {
+	const url=`${apiUrl}/user/signup`
+	console.log(url)
         const response = await axios.post(`${apiUrl}/user/signup`, data);
         localStorage.setItem("token", response.data.token);
         console.log(response.data.token);
