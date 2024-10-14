@@ -1,5 +1,6 @@
 import { randomBytes, pbkdf2Sync } from 'crypto';
 
+
 export async function hashPassword(
   password: string,
   providedSalt?: string

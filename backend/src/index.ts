@@ -16,6 +16,15 @@ app.use(express.json());
 app.get("/favicon.ico", (req:any, res:any) => {
   res.status(204).end();
 });
+
+app.get('/api/test', (req:any, res:any) => {
+  res.json({
+    message: 'GET request successful!',
+    data: { id: 1, name: 'Test Data' },
+  });
+});
+
+
 app.use('/api/user',userRouter);
 app.use('/api/',godownRouter);
 app.use('/api/item',itemRouter);
