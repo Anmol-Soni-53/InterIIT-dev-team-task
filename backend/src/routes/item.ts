@@ -21,9 +21,16 @@ router.get("/:id", async (req, res) => {
 router.get("/filter/:type", async (req, res) => {
     try {
         const { type } = req.params;
+        const searchHeader = req.get('searchHeader');
         const items = await prisma.item.findMany({
           where: {
             category: type,
+            ...(searchHeader && {
+              name:{
+                contains:searchHeader,
+                mode:'insensitive'
+              }
+            })
           },
           select: {
             item_id: true,

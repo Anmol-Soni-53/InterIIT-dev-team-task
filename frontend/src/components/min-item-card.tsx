@@ -30,7 +30,7 @@ export default function MinItemCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="h-52 p-6 bg-gradient-to-br from-purple-600 to-pink-500 relative flex flex-col justify-between">
+      <div className="sm:h-30  md:h-52 p-6 bg-gradient-to-br from-purple-600 to-pink-500 relative flex flex-col justify-between">
         <motion.div
           className="absolute top-2 right-2 text-white opacity-20"
           animate={{ rotate: 360 }}
@@ -50,7 +50,7 @@ export default function MinItemCard({
         </div>
       </div>
       <div className="bg-white p-4">
-        <div className="grid grid-cols-1 gap-2 text-sm">
+        <div className="hidden md:grid grid-cols-1 gap-2 text-sm">
           <div>
             <p className="text-gray-500">ID</p>
             <p className="font-medium">{item_id}</p>
