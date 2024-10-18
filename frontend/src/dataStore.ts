@@ -15,11 +15,9 @@ interface TreeNode {
   Item?: Item[];
 }
 
-// Function to update the node in the tree with partial updates
 function updateTreeById(id: string, updatedData: Partial<TreeNode>, treeData: TreeNode[]): TreeNode[] {
   return treeData.map(node => {
     if (node.id === id) {
-      // Update only the fields present in updatedData
       return { ...node, ...updatedData };
     }
     if (node.children) {
